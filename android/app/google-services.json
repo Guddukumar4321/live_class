@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "547287648953",
+    "firebase_url": "https://weighty-opus-340606-default-rtdb.firebaseio.com",
+    "project_id": "weighty-opus-340606",
+    "storage_bucket": "weighty-opus-340606.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547287648953:android:d86e69c079f008fdc96968",
+        "android_client_info": {
+          "package_name": "com.example.educampus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZUbhiVaWdHSkt0PcmlFpENznsvZCSfF0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547287648953:android:70466cd47334cdcac96968",
+        "android_client_info": {
+          "package_name": "com.example.live_classroom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZUbhiVaWdHSkt0PcmlFpENznsvZCSfF0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
