@@ -1,5 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:live_classroom/views/auth/login/bloc/login_bloc.dart';
+import 'package:live_classroom/views/auth/login/repository/login_repository.dart';
+import 'package:live_classroom/views/auth/register/bloc/register_bloc.dart';
+import 'package:live_classroom/views/auth/register/repository/auth_repository.dart';
 import 'core/route/app_pages.dart';
 import 'core/route/app_routes.dart';
 import 'firebase_options.dart';
@@ -18,14 +23,25 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'LiveClassroom',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    return MultiBlocProvider(
+
+      providers: [
+        BlocProvider<AuthBloc>(
+          create: (BuildContext context) => AuthBloc(AuthRepository()),
+        ),
+        BlocProvider<LoginBloc>(
+          create: (BuildContext context) => LoginBloc(LoginRepository()),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'LiveClassroom',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        ),
+        routes: AppPages.routes,
+        initialRoute: AppRoutes.splash,
       ),
-      routes: AppPages.routes,
-      initialRoute: AppRoutes.splash,
     );
   }
 }

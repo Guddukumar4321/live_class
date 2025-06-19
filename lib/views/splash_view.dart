@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
 import '../core/images/image_path.dart';
@@ -6,7 +7,6 @@ import '../core/route/app_routes.dart';
 import '../utilites/text_style.dart';
 import '../widgets/bg_widget.dart';
 import '../widgets/custom_images.dart';
-import 'auth/register/register_view.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -21,9 +21,19 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Timer(const Duration(seconds: 3), () {
-      // Navigate to Register Page
-      Navigator.pushReplacementNamed(context, AppRoutes.register);
+      checkLoginStatus();
     });
+  }
+
+  Future<void> checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isLoggedIn = prefs.getBool('is_logged_in') ?? false;
+
+    if (isLoggedIn) {
+      Navigator.pushReplacementNamed(context, AppRoutes.main);
+    } else {
+      Navigator.pushReplacementNamed(context, AppRoutes.register);
+    }
   }
 
   @override
