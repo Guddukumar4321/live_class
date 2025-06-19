@@ -5,6 +5,8 @@ import 'package:live_classroom/views/auth/login/bloc/login_bloc.dart';
 import 'package:live_classroom/views/auth/login/repository/login_repository.dart';
 import 'package:live_classroom/views/auth/register/bloc/register_bloc.dart';
 import 'package:live_classroom/views/auth/register/repository/auth_repository.dart';
+import 'package:live_classroom/views/home/home_tab/bloc/video_bloc.dart';
+import 'package:live_classroom/views/home/home_tab/repository/video_repository.dart';
 import 'core/route/app_pages.dart';
 import 'core/route/app_routes.dart';
 import 'firebase_options.dart';
@@ -31,6 +33,10 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<LoginBloc>(
           create: (BuildContext context) => LoginBloc(LoginRepository()),
+        ),
+
+        BlocProvider<VideoBloc>(
+          create: (BuildContext context) => VideoBloc(VideoRepository()),
         ),
       ],
       child: MaterialApp(
