@@ -9,6 +9,7 @@ import 'package:live_classroom/views/auth/register/repository/auth_repository.da
 import 'package:live_classroom/views/home/home_tab/bloc/video_bloc.dart';
 import 'package:live_classroom/views/home/home_tab/bloc/video_event.dart';
 import 'package:live_classroom/views/home/home_tab/repository/video_repository.dart';
+import 'package:live_classroom/views/home/search_tab/search_bloc.dart';
 import 'package:live_classroom/views/home/setting_tab/bloc/setting_bloc.dart';
 import 'package:live_classroom/views/home/setting_tab/repository/settings_repository.dart';
 import 'core/route/app_pages.dart';
@@ -49,6 +50,10 @@ class MyApp extends StatelessWidget {
 
         BlocProvider<SettingsBloc>(
           create: (context) => SettingsBloc(SettingsRepository()),
+        ),
+
+        BlocProvider<SearchBloc>(
+          create: (context) => SearchBloc(FirebaseFirestore.instance),
         ),
 
       ],
