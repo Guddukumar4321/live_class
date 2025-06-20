@@ -51,6 +51,7 @@ dependencies:
   permission_handler: ^12.0.0+1
   webview_flutter: ^4.4.2
   webview_flutter_wkwebview: ^3.0.6
+  firebase_app_check: ^0.3.2+7
 
 dev_dependencies:
   flutter_test:

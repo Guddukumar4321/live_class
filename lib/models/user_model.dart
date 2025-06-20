@@ -23,13 +23,13 @@ class UserModel {
     userName: json["user_name"],
     password: json["password"],
     email: json["email"],
-    profile: json["profile"]
+    profile: json["profilePicUrl"]
   );
 
   Map<String, dynamic> toJson() => {
     "user_name": userName,
     "password": password,
     "email": email,
-    "profile":profile
+    "profilePicUrl":profile
   };
 }

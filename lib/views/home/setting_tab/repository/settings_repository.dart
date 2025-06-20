@@ -27,6 +27,20 @@ class SettingsRepository {
   }
 
   Future<void> changePassword(String newPassword) async {
-    await auth.currentUser!.updatePassword(newPassword);
+    final user = auth.currentUser;
+
+    if (user == null) {
+      throw Exception('User not logged in');
+    }
+    try {
+      await user.updatePassword(newPassword);
+      final uid = user.uid;
+      await firestore.collection('live_class_users').doc(uid).update({
+        'password': newPassword,
+      });
+    } catch (e) {
+      throw Exception('Failed to change password: ${e.toString()}');
+    }
   }
+
 }
