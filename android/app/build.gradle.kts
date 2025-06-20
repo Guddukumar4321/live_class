@@ -27,10 +27,11 @@ android {
         applicationId = "com.example.live_classroom"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 23
+        minSdk = 26
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
     }
 
     buildTypes {
@@ -40,6 +41,12 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+}
+
+dependencies {
+    implementation("us.zoom.videosdk:zoomvideosdk-core:2.1.10")
+    implementation("us.zoom.videosdk:zoomvideosdk-videoeffects:2.1.10")
+    implementation("us.zoom.videosdk:zoomvideosdk-annotation:2.1.10")
 }
 
 flutter {

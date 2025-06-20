@@ -37,7 +37,6 @@ dependencies:
   flutter_svg: ^2.2.0
   cached_network_image: ^3.4.1
   vimeo_video_player: ^1.0.1
-#  flutter_zoom_sdk: ^1.1.0+4
   image_cropper: ^9.1.0
   image_picker: ^1.1.2
   firebase_storage: ^12.4.7
@@ -47,6 +46,11 @@ dependencies:
   equatable: ^2.0.7
   flutter_bloc: ^9.1.1
   shared_preferences: ^2.5.3
+  flutter_zoom_videosdk: ^1.7.0
+  dart_jsonwebtoken: ^2.12.1
+  permission_handler: ^12.0.0+1
+  webview_flutter: ^4.4.2
+  webview_flutter_wkwebview: ^3.0.6
 
 dev_dependencies:
   flutter_test:

@@ -1,16 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:live_classroom/views/home/home_tab/bloc/video_event.dart';
+import 'package:live_classroom/views/home/home_tab/bloc/video_state.dart';
+
 import '../repository/video_repository.dart';
-import 'video_event.dart';
-import 'video_state.dart';
 
 class VideoBloc extends Bloc<VideoEvent, VideoState> {
-  final VideoRepository repository;
+  final VideoRepository videoRepository;
 
-  VideoBloc(this.repository) : super(VideoInitial()) {
+  VideoBloc(this.videoRepository) : super(VideoInitial()) {
     on<LoadVideos>((event, emit) async {
       emit(VideoLoading());
       try {
-        final videos = await repository.fetchVideos();
+        final videos = await videoRepository.fetchVideos();
         emit(VideoLoaded(videos));
       } catch (e) {
         emit(VideoError('Failed to load videos'));

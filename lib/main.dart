@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:live_classroom/views/auth/login/repository/login_repository.dart
 import 'package:live_classroom/views/auth/register/bloc/register_bloc.dart';
 import 'package:live_classroom/views/auth/register/repository/auth_repository.dart';
 import 'package:live_classroom/views/home/home_tab/bloc/video_bloc.dart';
+import 'package:live_classroom/views/home/home_tab/bloc/video_event.dart';
 import 'package:live_classroom/views/home/home_tab/repository/video_repository.dart';
 import 'core/route/app_pages.dart';
 import 'core/route/app_routes.dart';
@@ -36,8 +38,13 @@ class MyApp extends StatelessWidget {
         ),
 
         BlocProvider<VideoBloc>(
-          create: (BuildContext context) => VideoBloc(VideoRepository()),
+          create: (BuildContext context) {
+            final bloc = VideoBloc(VideoRepository(FirebaseFirestore.instance));
+            bloc.add(LoadVideos());
+            return bloc;
+          },
         ),
+
       ],
       child: MaterialApp(
         title: 'LiveClassroom',

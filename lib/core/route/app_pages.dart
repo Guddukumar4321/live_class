@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../views/auth/login/login_view.dart';
 import '../../views/auth/register/register_view.dart';
 import '../../views/home/dashboard/main_screen.dart';
+import '../../views/home/home_tab/vimeo_video_player.dart';
 import '../../views/splash_view.dart';
 import 'app_routes.dart';
 
@@ -12,7 +13,7 @@ class AppPages {
     AppRoutes.login:       (_) =>  LoginPage(),
     AppRoutes.register:    (_) =>  RegisterPage(),
     AppRoutes.main:        (_) =>  MainScreen(),
-    // AppRoutes.profile:     (_) => const ProfilePage(),
+    // AppRoutes.videoPlayer:     (_) =>  VideoPlayerPage(),
     // AppRoutes.liveStream:  (_) => const LiveStreamPage(),
     // AppRoutes.videoLibrary:(_) => const VideoLibraryPage(),
     // AppRoutes.search:      (_) => const SearchPage(),

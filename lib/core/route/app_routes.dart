@@ -8,4 +8,5 @@ class AppRoutes {
   static const liveStream = '/live-stream';
   static const videoLibrary = '/videos';
   static const search = '/search';
+  static const videoPlayer = '/video_player';
 }

@@ -7,23 +7,23 @@ String videoModelToJson(VideoModel data) => json.encode(data.toJson());
 class VideoModel {
   String? title;
   String? thumbnailUrl;
-  String? videoUrl;
+  String? vimeoId;
 
   VideoModel({
     this.title,
     this.thumbnailUrl,
-    this.videoUrl,
+    this.vimeoId,
   });
 
   factory VideoModel.fromJson(Map<String, dynamic> json) => VideoModel(
     title: json["title"],
-    thumbnailUrl: json["thumbnailUrl"],
-    videoUrl: json["videoUrl"],
+    thumbnailUrl: json["thumbnail"],
+    vimeoId: json["vimeoId"],
   );
 
   Map<String, dynamic> toJson() => {
     "title": title,
-    "thumbnailUrl": thumbnailUrl,
-    "videoUrl": videoUrl,
+    "thumbnail": thumbnailUrl,
+    "vimeoId": vimeoId,
   };
 }

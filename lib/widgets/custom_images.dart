@@ -19,50 +19,63 @@ class CustomImage extends StatelessWidget {
   }) : super(key: key);
 
   bool get _isSvg => path.toLowerCase().endsWith('.svg');
-  bool get _isAsset => !isNetwork;
 
   @override
   Widget build(BuildContext context) {
     if (isNetwork) {
-      if (_isSvg) {
-        return SvgPicture.network(
-          path,
-          width: width,
-          height: height,
-          fit: fit,
-          placeholderBuilder: (context) => _placeholder(),
-        );
-      } else {
-        return CachedNetworkImage(
-          imageUrl: path,
-          width: width,
-          height: height,
-          fit: fit,
-          placeholder: (context, url) => _placeholder(),
-          errorWidget: (context, url, error) => _errorIcon(),
-        );
-      }
+      return _isSvg ? _buildSvgNetwork() : _buildRasterNetwork();
     } else {
-      if (_isSvg) {
-        return SvgPicture.asset(
-          path,
-          width: width,
-          height: height,
-          fit: fit,
-        );
-      } else {
-        return Image.asset(
-          path,
-          width: width,
-          height: height,
-          fit: fit,
-          errorBuilder: (context, error, stackTrace) => _errorIcon(),
-        );
-      }
+      return _isSvg ? _buildSvgAsset() : _buildRasterAsset();
     }
   }
 
-  Widget _placeholder() => const Center(child: CircularProgressIndicator());
+  Widget _buildSvgNetwork() {
+    return SvgPicture.network(
+      path,
+      width: width,
+      height: height,
+      fit: fit,
+      placeholderBuilder: (context) => _placeholder(),
+    );
+  }
+
+  Widget _buildRasterNetwork() {
+    return CachedNetworkImage(
+      imageUrl: path,
+      width: width,
+      height: height,
+      fit: fit,
+      placeholder: (context, url) => _placeholder(),
+      errorWidget: (context, url, error) => _errorIcon(),
+    );
+  }
+
+  Widget _buildSvgAsset() {
+    return SvgPicture.asset(
+      path,
+      width: width,
+      height: height,
+      fit: fit,
+    );
+  }
+
+  Widget _buildRasterAsset() {
+    return Image.asset(
+      path,
+      width: width,
+      height: height,
+      fit: fit,
+      errorBuilder: (context, error, stackTrace) => _errorIcon(),
+    );
+  }
+
+  Widget _placeholder() => const Center(
+    child: SizedBox(
+      width: 24,
+      height: 24,
+      child: CircularProgressIndicator(strokeWidth: 2),
+    ),
+  );
 
   Widget _errorIcon() => const Icon(Icons.broken_image, size: 40, color: Colors.grey);
 }
