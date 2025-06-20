@@ -1,143 +1,139 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'bloc/setting_bloc.dart';
+import 'bloc/setting_event.dart';
+import 'bloc/setting_state.dart';
+
 
 class SettingView extends StatefulWidget {
-  const SettingView({super.key});
+  const SettingView({Key? key}) : super(key: key);
 
   @override
-  State<SettingView> createState() => _SettingViewState();
+  State<SettingView> createState() => _SettingsScreenState();
 }
 
-class _SettingViewState extends State<SettingView> {
-  String fullName = 'John Doe';
-  String email = 'johndoe@example.com';
-  String? profileUrl;
+class _SettingsScreenState extends State<SettingView> {
+  final TextEditingController _passwordController = TextEditingController();
 
-  Future<void> pickAndUploadImage() async {
-    final picker = ImagePicker();
-    final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked == null) return;
+  File? _pickedImage;
 
-    final cropped = await ImageCropper().cropImage(
-      sourcePath: picked.path,
-      // aspectRatioPresets: [CropAspectRatioPreset.square],
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: 'Crop Image',
-          toolbarColor: Colors.deepPurple,
-          toolbarWidgetColor: Colors.white,
-          initAspectRatio: CropAspectRatioPreset.original,
-          lockAspectRatio: true,
-        ),
-        IOSUiSettings(title: 'Crop Image'),
-      ],
-    );
-
-    if (cropped == null) return;
-
-    setState(() {
-      profileUrl = cropped.path;
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Profile picture updated (mocked)")),
-    );
+  @override
+  void initState() {
+    super.initState();
+    context.read<SettingsBloc>().add(LoadUserProfile());
   }
 
-  Future<void> changePassword() async {
-    final controller = TextEditingController();
-    await showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Change Password"),
-        content: TextField(
-          controller: controller,
-          obscureText: true,
-          decoration: const InputDecoration(labelText: "New Password"),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Password changed (mocked)")),
-              );
-            },
-            child: const Text("Update"),
-          ),
-        ],
-      ),
+  Future<void> _pickAndCropImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile == null) return;
+
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: pickedFile.path,
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 90,
     );
+
+    if (croppedFile != null) {
+      setState(() => _pickedImage = File(croppedFile.path));
+      context.read<SettingsBloc>().add(UpdateProfilePicture(_pickedImage!));
+    }
+  }
+
+  void _changePassword() {
+    final newPassword = _passwordController.text.trim();
+    if (newPassword.isNotEmpty) {
+      context.read<SettingsBloc>().add(ChangePassword(newPassword));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Enter a new password')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Stack(
+      appBar: AppBar(
+        title: const Text('Settings'),
+      ),
+      body: BlocConsumer<SettingsBloc, SettingsState>(
+        listener: (context, state) {
+          if (state is PasswordChangedSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Password changed successfully')),
+            );
+            _passwordController.clear();
+          } else if (state is SettingsError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is SettingsLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is SettingsLoaded || state is ProfilePictureUpdated) {
+            final fullName = (state is SettingsLoaded)
+                ? state.fullName
+                : (state as ProfilePictureUpdated).profilePicUrl;
+
+            final email = (state is SettingsLoaded)
+                ? state.email
+                : ''; // Only available in initial load
+
+            final profilePicUrl = (state is SettingsLoaded)
+                ? state.profilePicUrl
+                : (state as ProfilePictureUpdated).profilePicUrl;
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundImage: profileUrl != null
-                        ? FileImage(File(profileUrl!))
-                        : const AssetImage('assets/default_user.png') as ImageProvider,
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 4,
-                    child: GestureDetector(
-                      onTap: pickAndUploadImage,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.deepPurple,
-                          border: Border.all(color: Colors.white, width: 2),
-                        ),
-                        padding: const EdgeInsets.all(8),
-                        child: const Icon(Icons.edit, color: Colors.white, size: 20),
-                      ),
+                  GestureDetector(
+                    onTap: _pickAndCropImage,
+                    child: CircleAvatar(
+                      radius: 60,
+                      backgroundImage: NetworkImage(profilePicUrl),
+                      child: profilePicUrl.isEmpty
+                          ? const Icon(Icons.person, size: 60)
+                          : null,
                     ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(fullName, style: const TextStyle(fontSize: 20)),
+                  const SizedBox(height: 4),
+                  Text(email, style: const TextStyle(color: Colors.grey)),
+                  const Divider(height: 40),
+                  TextField(
+                    controller: _passwordController,
+                    decoration: const InputDecoration(
+                      labelText: 'New Password',
+                      border: OutlineInputBorder(),
+                    ),
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: _changePassword,
+                    child: const Text('Change Password'),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
-              Text(
-                fullName,
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                email,
-                style: const TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-              const SizedBox(height: 30),
-              ListTile(
-                leading: const Icon(Icons.lock, color: Colors.deepPurple),
-                title: const Text("Change Password"),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: changePassword,
-              ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.logout, color: Colors.redAccent),
-                title: const Text("Log Out"),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Log out tapped (mocked)")),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
+            );
+          }
+
+          return const Center(child: Text("Something went wrong."));
+        },
       ),
     );
   }

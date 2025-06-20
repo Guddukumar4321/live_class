@@ -9,6 +9,8 @@ import 'package:live_classroom/views/auth/register/repository/auth_repository.da
 import 'package:live_classroom/views/home/home_tab/bloc/video_bloc.dart';
 import 'package:live_classroom/views/home/home_tab/bloc/video_event.dart';
 import 'package:live_classroom/views/home/home_tab/repository/video_repository.dart';
+import 'package:live_classroom/views/home/setting_tab/bloc/setting_bloc.dart';
+import 'package:live_classroom/views/home/setting_tab/repository/settings_repository.dart';
 import 'core/route/app_pages.dart';
 import 'core/route/app_routes.dart';
 import 'firebase_options.dart';
@@ -43,6 +45,10 @@ class MyApp extends StatelessWidget {
             bloc.add(LoadVideos());
             return bloc;
           },
+        ),
+
+        BlocProvider<SettingsBloc>(
+          create: (context) => SettingsBloc(SettingsRepository()),
         ),
 
       ],
