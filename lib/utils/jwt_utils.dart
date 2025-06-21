@@ -1,3 +1,24 @@
+/*
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
+
+class JwtUtils {
+  static const sdkKey = 'DAGzlWJ1Tky9b06qhbdcXw';
+  static const sdkSecret = 'suDebKvNeQeHYgJr6xBPYOmAcI5bP5Tw';
+
+  static String generateZoomToken(String sessionName) {
+    final jwt = JWT({
+      'app_key': sdkKey,
+      'version': 1,
+      'iat': DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      'exp': DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
+      'tpc': sessionName,
+    });
+
+    return jwt.sign(SecretKey(sdkSecret), algorithm: JWTAlgorithm.HS256);
+  }
+}
+*/
+
 // This util is to generate JWTs.
 // THIS IS NOT A SAFE OPERATION TO DO IN YOUR APP IN PRODUCTION.
 // JWTs should be provided by a backend server as they require a secret
@@ -5,8 +26,7 @@
 import 'dart:math';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
-
-import '../views/home/live_tab/config.dart';
+import 'config.dart';
 
 String makeId(int length) {
   String result = "";
@@ -31,14 +51,15 @@ String generateJwt(String sessionName, String roleType) {
         'exp': (exp.millisecondsSinceEpoch / 1000).round(),
         'tpc': sessionName,
         'role_type': int.parse(roleType),
-        'cloud_recording_option': 1,
+
+        // 'cloud_recording_option': 1,
       },
     );
     var token = jwt.sign(SecretKey(config["ZOOM_SDK_SECRET"]));
     return token;
   } catch (e) {
-    print("check valid key :: ${e}");
     debugPrint(e.toString());
     return '';
   }
 }
+

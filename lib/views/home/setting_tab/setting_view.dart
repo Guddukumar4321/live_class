@@ -185,6 +185,7 @@ class _SettingsScreenState extends State<SettingView> {
             profilePicUrl = state.profilePicUrl;
           }
 
+          print("check network image:: ${profilePicUrl}");
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(

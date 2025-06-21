@@ -1,7 +1,7 @@
 
 const Map config = {
-  'ZOOM_SDK_KEY': 'xjTsuMZxQ6q66RlTFODmBQ',
-  'ZOOM_SDK_SECRET': 'cMXvXK3DEhoN7Wo96Dv10GMGHsoP3gw1',
+  'ZOOM_SDK_KEY': 'DAGzlWJ1Tky9b06qhbdcXw',
+  'ZOOM_SDK_SECRET': 'suDebKvNeQeHYgJr6xBPYOmAcI5bP5Tw',
 };
 
 const Map sessionDetails = {

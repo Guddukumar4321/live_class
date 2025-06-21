@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/route/app_routes.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../utilites/text_style.dart';
+import '../../../utils/text_style.dart';
 import '../../../widgets/bg_widget.dart';
 import '../../../widgets/custom_input_field.dart';
 import 'bloc/register_bloc.dart';

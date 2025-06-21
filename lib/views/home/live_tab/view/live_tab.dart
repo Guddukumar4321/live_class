@@ -2,14 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_zoom_videosdk/native/zoom_videosdk.dart';
 import 'package:flutter_zoom_videosdk/native/zoom_videosdk_user.dart';
 import 'package:flutter_zoom_videosdk/flutter_zoom_view.dart' as zoom_view;
 import 'package:flutter_zoom_videosdk/native/zoom_videosdk_event_listener.dart';
-import 'package:permission_handler/permission_handler.dart';
-
-import '../../../utilites/jwt.dart';
-import 'config.dart';
+import '../../../../utils/config.dart';
+import '../../../../utils/jwt_utils.dart';
 
 class Videochat extends StatefulWidget {
   const Videochat({super.key});

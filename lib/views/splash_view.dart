@@ -4,7 +4,7 @@ import 'dart:async';
 
 import '../core/images/image_path.dart';
 import '../core/route/app_routes.dart';
-import '../utilites/text_style.dart';
+import '../utils/text_style.dart';
 import '../widgets/bg_widget.dart';
 import '../widgets/custom_images.dart';
 

@@ -16,7 +16,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     emit(SettingsLoading());
     try {
       final user = await repo.fetchUserProfile();
-      emit(SettingsLoaded(user.userName??"", user.email??"", user.password??""));
+      emit(SettingsLoaded(user.userName??"", user.email??"", user.profile??""));
     } catch (e) {
       emit(SettingsError(e.toString()));
     }

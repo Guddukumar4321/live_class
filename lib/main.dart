@@ -10,12 +10,14 @@ import 'package:live_classroom/views/auth/register/repository/auth_repository.da
 import 'package:live_classroom/views/home/home_tab/bloc/video_bloc.dart';
 import 'package:live_classroom/views/home/home_tab/bloc/video_event.dart';
 import 'package:live_classroom/views/home/home_tab/repository/video_repository.dart';
-import 'package:live_classroom/views/home/search_tab/search_bloc.dart';
+import 'package:live_classroom/views/home/live_tab/bloc/live_bloc.dart';
+import 'package:live_classroom/views/home/live_tab/repositories/live_repository.dart';
 import 'package:live_classroom/views/home/setting_tab/bloc/setting_bloc.dart';
 import 'package:live_classroom/views/home/setting_tab/repository/settings_repository.dart';
 import 'core/route/app_pages.dart';
 import 'core/route/app_routes.dart';
 import 'firebase_options.dart';
+import 'views/home/live_tab/bloc/live_event.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,9 +59,9 @@ class MyApp extends StatelessWidget {
           create: (context) => SettingsBloc(SettingsRepository()),
         ),
 
-        BlocProvider<SearchBloc>(
-          create: (context) => SearchBloc(FirebaseFirestore.instance),
-        ),
+       /* BlocProvider<LiveBloc>(
+          create: (context) => LiveBloc(LiveRepository())..add(CheckLiveStatus()),
+        ),*/
 
       ],
       child: MaterialApp(

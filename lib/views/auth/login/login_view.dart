@@ -4,7 +4,7 @@ import 'package:live_classroom/widgets/custom_input_field.dart';
 
 import '../../../core/route/app_routes.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../utilites/text_style.dart';
+import '../../../utils/text_style.dart';
 import '../../../widgets/bg_widget.dart';
 import 'bloc/login_bloc.dart';
 import 'bloc/login_event.dart';
