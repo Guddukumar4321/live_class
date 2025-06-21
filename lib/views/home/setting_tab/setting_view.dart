@@ -1,14 +1,17 @@
+import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:path_provider/path_provider.dart';
+import '../../../core/route/app_routes.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../services/shared_prefs.dart';
+import '../../../widgets/custom_input_field.dart';
 import 'bloc/setting_bloc.dart';
 import 'bloc/setting_event.dart';
 import 'bloc/setting_state.dart';
+import 'image_crop.dart';
 
 class SettingView extends StatefulWidget {
   const SettingView({Key? key}) : super(key: key);
@@ -18,8 +21,12 @@ class SettingView extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingView> {
+  final TextEditingController _oldPasswordController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   File? _pickedImage;
+  String fullName = "";
+  String email = '';
+  String profilePicUrl = '';
 
   @override
   void initState() {
@@ -36,98 +43,61 @@ class _SettingsScreenState extends State<SettingView> {
 
       File tempImage = File(pickedFile.path);
 
-      // Show dialog to crop/delete
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text("Preview & Edit"),
-            content: SizedBox(
-              height: 300,
-              width: 300,
-              child: Image.file(tempImage, fit: BoxFit.contain),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close dialog
-                  setState(() {
-                    _pickedImage = null;
-                  });
-                },
-                child: const Text("Delete"),
-              ),
-              TextButton(
-                onPressed: () async {
-                  Navigator.pop(context); // Close dialog before crop
-                  await _cropImage(tempImage.path);
-                },
-                child: const Text("Crop"),
-              ),
-              TextButton(
-                onPressed: () {
-                  final imageFile = File(tempImage.path);
-                  context.read<SettingsBloc>().add(UpdateProfilePicture(imageFile));
-                },
-                child: const Text("Done"),
-              ),
-            ],
-          );
-        },
-      );
+      final croppedBytes = await Navigator.push(context, MaterialPageRoute(builder: (context) => CropSample(tempImage: tempImage),),);
+      if (croppedBytes != null) {
+        final directory = await getTemporaryDirectory();
+        final filePath = '${directory.path}/cropped_image_${DateTime.now().millisecondsSinceEpoch}.jpg';
+        final File file = await File(filePath).writeAsBytes(croppedBytes);
 
-      // Temporarily assign to preview in dialog
-      setState(() {
-        _pickedImage = tempImage;
-      });
+        _pickedImage = file;
+
+        if (mounted) {
+          setState(() {});
+        }
+         context.read<SettingsBloc>().add(UpdateProfilePicture(file));
+      }
     } catch (e) {
       debugPrint('Image pick error: $e');
     }
   }
 
 
-  Future<void> _cropImage(String imagePath) async {
-    try {
-      final croppedFile = await ImageCropper().cropImage(
-        sourcePath: imagePath,
-        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-        compressFormat: ImageCompressFormat.jpg,
-        compressQuality: 90,
-        uiSettings: [
-          AndroidUiSettings(
-            toolbarTitle: 'Crop Image',
-            toolbarColor: Colors.deepPurple,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.square,
-            lockAspectRatio: true,
-          ),
-          IOSUiSettings(title: 'Crop Image'),
-        ],
-      );
 
-      if (croppedFile != null) {
-        final imageFile = File(croppedFile.path);
-        setState(() {
-          _pickedImage = imageFile;
-        });
-        context.read<SettingsBloc>().add(UpdateProfilePicture(imageFile));
-      }
-    } catch (e) {
-      debugPrint('Image crop error: $e');
-    }
-  }
 
 
   void _showChangePasswordDialog() {
     _passwordController.clear();
+    _oldPasswordController.clear();
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+
         title: const Text("Change Password"),
-        content: TextField(
-          controller: _passwordController,
-          obscureText: true,
-          decoration: const InputDecoration(labelText: "New Password"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+
+            CustomInputField(
+              controller: _oldPasswordController,
+              label: 'Old Password',
+              icon: Icons.lock_outline,
+              obscureText: true,
+              suffixIcon: Icon(Icons.check_circle, color: Colors.green),
+              validator: (value) =>
+              value!.length < 6 ? 'Too short' : null,
+            ),
+
+            SizedBox(height: 10,),
+            CustomInputField(
+              controller: _passwordController,
+              label: 'New Password',
+              icon: Icons.lock_outline,
+              obscureText: true,
+              suffixIcon: Icon(Icons.check_circle, color: Colors.green),
+              validator: (value) =>
+              value!.length < 6 ? 'Too short' : null,
+            ),
+          ],
         ),
         actions: [
           TextButton(
@@ -136,9 +106,10 @@ class _SettingsScreenState extends State<SettingView> {
           ),
           ElevatedButton(
             onPressed: () {
+              final oldPassword = _oldPasswordController.text.trim();
               final newPassword = _passwordController.text.trim();
               if (newPassword.isNotEmpty) {
-                context.read<SettingsBloc>().add(ChangePassword(newPassword));
+                context.read<SettingsBloc>().add(ChangePassword(newPassword, oldPassword));
                 Navigator.pop(context);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -162,6 +133,7 @@ class _SettingsScreenState extends State<SettingView> {
       body: BlocConsumer<SettingsBloc, SettingsState>(
         listener: (context, state) {
           if (state is PasswordChangedSuccess) {
+            context.read<SettingsBloc>().add(LoadUserProfile());
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Password changed successfully')),
             );
@@ -173,9 +145,7 @@ class _SettingsScreenState extends State<SettingView> {
           }
         },
         builder: (context, state) {
-          String fullName = "";
-          String email = '';
-          String profilePicUrl = '';
+
 
           if (state is SettingsLoaded) {
             fullName = state.fullName;
@@ -185,7 +155,6 @@ class _SettingsScreenState extends State<SettingView> {
             profilePicUrl = state.profilePicUrl;
           }
 
-          print("check network image:: ${profilePicUrl}");
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -245,6 +214,8 @@ class _SettingsScreenState extends State<SettingView> {
                 _featureCard(
                   title: "Logout",
                   onTap: () {
+                    SharedPrefs.logout();
+                    Navigator.pushReplacementNamed(context, AppRoutes.register);
                     // You can add your logout logic here
                   },
                 ),

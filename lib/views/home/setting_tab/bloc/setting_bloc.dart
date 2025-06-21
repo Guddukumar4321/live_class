@@ -27,6 +27,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     try {
       final url = await repo.uploadProfilePicture(event.imageFile);
       emit(ProfilePictureUpdated(url));
+
     } catch (e) {
       emit(SettingsError(e.toString()));
     }
@@ -34,7 +35,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   Future<void> _changePassword(ChangePassword event, Emitter emit) async {
     try {
-      await repo.changePassword(event.newPassword);
+      await repo.changePassword(newPassword:event.newPassword, currentPassword:event.oldPassword);
       emit(PasswordChangedSuccess());
     } catch (e) {
       emit(SettingsError(e.toString()));

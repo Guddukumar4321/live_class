@@ -83,6 +83,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           controller: passwordController,
                           label: 'Password',
                           icon: Icons.lock,
+                          suffixIcon: Icon(Icons.check_circle, color: Colors.green),
                           obscureText: true,
                           validator: (value) =>
                               value!.length < 6 ? 'Too short' : null,
@@ -93,6 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           label: 'Confirm Password',
                           icon: Icons.lock_outline,
                           obscureText: true,
+                          suffixIcon: Icon(Icons.check_circle, color: Colors.green),
                           validator: (value) => value != passwordController.text
                               ? 'Passwords do not match'
                               : null,

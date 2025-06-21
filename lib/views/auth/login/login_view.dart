@@ -70,6 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                       CustomInputField(
                         controller: passwordController,
                         label: 'Password',
+                        suffixIcon: Icon(Icons.check_circle, color: Colors.green),
                         icon: Icons.lock,
                         obscureText: true,
                       ),

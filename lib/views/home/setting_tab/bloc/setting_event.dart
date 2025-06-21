@@ -10,6 +10,7 @@ class UpdateProfilePicture extends SettingsEvent {
 }
 
 class ChangePassword extends SettingsEvent {
+  final String oldPassword;
   final String newPassword;
-  ChangePassword(this.newPassword);
+  ChangePassword(this.newPassword, this.oldPassword);
 }

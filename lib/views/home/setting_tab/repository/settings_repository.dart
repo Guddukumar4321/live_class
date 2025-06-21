@@ -26,21 +26,33 @@ class SettingsRepository {
     return url;
   }
 
-  Future<void> changePassword(String newPassword) async {
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
     final user = auth.currentUser;
 
     if (user == null) {
       throw Exception('User not logged in');
     }
+
     try {
+      final credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      );
+
+      await user.reauthenticateWithCredential(credential);
+
       await user.updatePassword(newPassword);
+
       final uid = user.uid;
       await firestore.collection('live_class_users').doc(uid).update({
         'password': newPassword,
       });
+
     } catch (e) {
-      throw Exception('Failed to change password: ${e.toString()}');
+      throw Exception('Password change failed: ${e.toString()}');
     }
   }
-
 }

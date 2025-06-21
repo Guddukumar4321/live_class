@@ -37,7 +37,7 @@ dependencies:
   flutter_svg: ^2.2.0
   cached_network_image: ^3.4.1
   vimeo_video_player: ^1.0.1
-  image_cropper: ^9.1.0
+  crop_your_image: ^2.0.0
   image_picker: ^1.1.2
   firebase_storage: ^12.4.7
   firebase_auth: ^5.6.0
@@ -51,7 +51,7 @@ dependencies:
   permission_handler: ^12.0.0+1
   webview_flutter: ^4.4.2
   webview_flutter_wkwebview: ^3.0.6
-  firebase_app_check: ^0.3.2+7
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
