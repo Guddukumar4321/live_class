@@ -13,6 +13,28 @@ class SharedPrefs {
     return prefs.getString('uid');
   }
 
+  static Future setUserData(String key, bool? isBool, var value) async {
+    final prefs = await SharedPreferences.getInstance();
+    if(isBool??false){
+      return prefs.setBool(key, value);
+    }else{
+      return prefs.setString(key, value);
+
+    }
+  }
+
+  static Future getUserData(String key, bool? isBool) async {
+    final prefs = await SharedPreferences.getInstance();
+    if(isBool??false){
+      var data = prefs.getBool(key);
+      return data??false;
+    }else{
+      var data = prefs.getString(key);
+      return data??"User";
+
+    }
+  }
+
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();

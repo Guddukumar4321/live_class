@@ -5,6 +5,7 @@ import 'package:live_classroom/views/home/search_tab/search_event.dart';
 import 'package:live_classroom/views/home/search_tab/search_state.dart';
 import 'package:live_classroom/widgets/custom_images.dart';
 
+import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/custom_input_field.dart';
 import '../home_tab/vimeo_video_player.dart';
 
@@ -16,6 +17,7 @@ class SearchView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(title: "Search",),
       body: SafeArea(
         child: Column(
           children: [

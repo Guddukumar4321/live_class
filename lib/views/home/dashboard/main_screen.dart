@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:live_classroom/views/home/home_tab/home_view.dart';
-import 'package:live_classroom/views/home/search_tab/search_view.dart';
-import 'package:live_classroom/views/home/setting_tab/setting_view.dart';
+
+import '../home_tab/home_view.dart';
 import '../live_tab/view/live_tab.dart';
+import '../search_tab/search_view.dart';
+import '../setting_tab/setting_view.dart';
 
 
 class MainScreen extends StatefulWidget {
@@ -18,7 +19,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _tabs =  [
     HomeView(),
     SearchView(),
-    Videochat(),
+    LiveScreen(),
     SettingView(),
   ];
 

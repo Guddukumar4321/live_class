@@ -1,23 +1,26 @@
-/*
-// live_state.dart
 abstract class LiveState {}
+
 class LiveInitial extends LiveState {}
-class LiveLoading extends LiveState {}
+
+class NoOneLive extends LiveState {}
+
 class LiveAvailable extends LiveState {
-  final String meetingId, token;
-  LiveAvailable(this.meetingId, this.token);
+  final String hostName;
+  final String callId;
+
+  LiveAvailable({required this.hostName, required this.callId});
 }
-class LiveJoinView extends LiveState {
-  final String meetingId, token;
-  LiveJoinView(this.meetingId, this.token);
+
+class LiveStartedByUser extends LiveState {
+  final String callId;
+
+  LiveStartedByUser(this.callId);
 }
-class LiveHostView extends LiveState {
-  final String meetingId, token;
-  LiveHostView(this.meetingId, this.token);
-}
-class LiveNotAvailable extends LiveState {}
+
+class LiveEnded extends LiveState {}
+
 class LiveError extends LiveState {
   final String message;
+
   LiveError(this.message);
 }
-*/

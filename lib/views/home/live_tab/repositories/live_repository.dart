@@ -1,42 +1,26 @@
-/*
-// live_repository.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
 import '../../../../models/live_session_model.dart';
-import '../../../../utils/jwt_utils.dart';
 
 class LiveRepository {
-  final _doc = FirebaseFirestore.instance.collection('liveSessions').doc('status');
+  final _doc = FirebaseFirestore.instance.collection("live_session").doc("current");
 
   Future<LiveSessionModel?> getLiveSession() async {
-    final snap = await _doc.get();
-    if (!snap.exists || !(snap.data()?['isLive'] ?? false)) return null;
-    return LiveSessionModel.fromMap(snap.data()!);
+    final snapshot = await _doc.get();
+    if (!snapshot.exists || snapshot.data()?['status'] == 'idle') return null;
+    return LiveSessionModel.fromMap(snapshot.data()!);
   }
 
-  Future<LiveSessionModel> createLiveSession() async {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-    final meetingId = DateTime.now().millisecondsSinceEpoch.toString();
-    final token = JwtUtils.generateZoomToken(meetingId);
-
-    final data = {
-      'isLive': true,
-      'hostUid': uid,
-      'meetingId': meetingId,
-      'token': token,
-      'createdAt': FieldValue.serverTimestamp(),
-    };
-
-    await _doc.set(data);
-    return LiveSessionModel.fromMap({
-      ...data,
-      'createdAt': DateTime.now(),
+  Future<void> startLive(String callId, String userId, String userName) async {
+    await _doc.set({
+      "status": "live",
+      "host_uid": userId,
+      "host_name": userName,
+      "call_id": callId,
+      "started_at": FieldValue.serverTimestamp(),
     });
   }
 
-  Future<void> endLiveSession() async {
-    await _doc.set({'isLive': false}, SetOptions(merge: true));
+  Future<void> endLive() async {
+    await _doc.update({"status": "idle"});
   }
 }
-*/

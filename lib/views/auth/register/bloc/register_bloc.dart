@@ -33,6 +33,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         authRepository.addUserProfile(user.uid,data);
         emit(AuthSuccess());
+        SharedPrefs.setUserData("name", false ,event.fullName.toString());
       } else {
         emit(AuthFailure("Login failed. Try again."));
       }

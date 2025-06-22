@@ -1,58 +1,45 @@
-/*
-// live_bloc.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../repositories/live_repository.dart';
 import 'live_event.dart';
 import 'live_state.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class LiveBloc extends Bloc<LiveEvent, LiveState> {
   final LiveRepository repo;
-  LiveBloc(this.repo) : super(LiveInitial()) {
-    on<CheckLiveStatus>(_onCheck);
-    on<GoLive>(_onGo);
-    on<JoinLive>(_onJoin);
-    on<EndLive>(_onEnd);
+  final String currentUserId;
+
+  LiveBloc({required this.repo, required this.currentUserId}) : super(LiveInitial()) {
+    on<CheckLiveStatus>(_onCheckLiveStatus);
+    on<GoLiveEvent>(_onGoLive);
+    on<EndLiveEvent>(_onEndLive);
+    on<JoinLiveEvent>(_onJoinLive);
   }
 
-  Future _onCheck(event, emit) async {
-    emit(LiveLoading());
-    try {
-      final live = await repo.getLiveSession();
-      if (live == null) return emit(LiveNotAvailable());
-
-      final uid = FirebaseAuth.instance.currentUser!.uid;
-      if (live.hostUid == uid) {
-        emit(LiveHostView(live.meetingId, live.token));
-      } else {
-        emit(LiveJoinView(live.meetingId, live.token));
-      }
-    } catch (e) {
-      emit(LiveError(e.toString()));
+  Future<void> _onCheckLiveStatus(CheckLiveStatus event, Emitter emit) async {
+    final session = await repo.getLiveSession();
+    if (session == null) {
+      emit(NoOneLive());
+    } else if (session.hostUid == currentUserId) {
+      // emit(LiveStartedByUser(session.callId));
+      emit(LiveAvailable(hostName: session.hostName, callId: session.callId));
+    } else {
+      emit(LiveAvailable(hostName: session.hostName, callId: session.callId));
     }
   }
 
-  Future _onGo(event, emit) async {
-    emit(LiveLoading());
-    try {
-      final live = await repo.createLiveSession();
-      emit(LiveHostView(live.meetingId, live.token));
-    } catch (e) {
-      emit(LiveError(e.toString()));
+  Future<void> _onGoLive(GoLiveEvent event, Emitter emit) async {
+    await repo.startLive(event.callId, event.userId, event.userName);
+    emit(LiveStartedByUser(event.callId));
+  }
+
+  Future<void> _onEndLive(EndLiveEvent event, Emitter emit) async {
+    await repo.endLive();
+    emit(LiveEnded());
+  }
+
+  Future<void> _onJoinLive(JoinLiveEvent event, Emitter emit) async {
+    final session = await repo.getLiveSession();
+    if (session != null) {
+      emit(LiveAvailable(hostName: session.hostName, callId: session.callId));
     }
-  }
-
-  Future _onJoin(event, emit) async {
-    emit(LiveLoading());
-    final live = await repo.getLiveSession();
-    if (live == null) return emit(LiveError('No live session'));
-    emit(LiveJoinView(live.meetingId, live.token));
-  }
-
-  Future _onEnd(event, emit) async {
-    await repo.endLiveSession();
-    emit(LiveNotAvailable());
   }
 }
-*/

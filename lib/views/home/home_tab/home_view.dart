@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:live_classroom/views/home/home_tab/widgets/video_card.dart';
 
 import '../../../models/video_model.dart';
+import '../../../widgets/custom_app_bar.dart';
 import 'bloc/video_bloc.dart';
 import 'bloc/video_state.dart';
 
@@ -15,7 +16,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Videos")),
+      appBar: CustomAppBar(title: "Video",),
       body: BlocBuilder<VideoBloc, VideoState>(
         builder: (context, state) {
       if (state is VideoLoading) {

@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../../core/route/app_routes.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../services/shared_prefs.dart';
+import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/custom_input_field.dart';
 import 'bloc/setting_bloc.dart';
 import 'bloc/setting_event.dart';
@@ -32,6 +33,13 @@ class _SettingsScreenState extends State<SettingView> {
   void initState() {
     super.initState();
     context.read<SettingsBloc>().add(LoadUserProfile());
+    Future.delayed(Duration.zero, () async {
+       fullName = await SharedPrefs.getUserData("name", false);
+       email = await SharedPrefs.getUserData("email", false);
+      setState(() {
+
+      });
+    });
   }
 
   Future<void> _pickImage() async {
@@ -127,9 +135,8 @@ class _SettingsScreenState extends State<SettingView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
+      appBar: CustomAppBar(title: "Setting",),
+
       body: BlocConsumer<SettingsBloc, SettingsState>(
         listener: (context, state) {
           if (state is PasswordChangedSuccess) {

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:live_classroom/widgets/custom_input_field.dart';
-
 import '../../../core/route/app_routes.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/value/String_value.dart';
 import '../../../utils/text_style.dart';
 import '../../../widgets/bg_widget.dart';
+import '../../../widgets/custom_input_field.dart';
 import 'bloc/login_bloc.dart';
 import 'bloc/login_event.dart';
 import 'bloc/login_state.dart';
@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                           style: AppTextStyles.heading2
                               .copyWith(color: AppColors.primary)),
                       const SizedBox(height: 8),
-                      Text("Login to your LiveClassroom account",
+                      Text("Login to your ${ConstString.appName} account",
                           style: AppTextStyles.bodyLight),
                       const SizedBox(height: 32),
                       CustomInputField(
@@ -88,8 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                                   context.read<LoginBloc>().add(
                                     LoginRequested(
                                       email: emailController.text.trim(),
-                                      password: passwordController.text.trim(),
-                                    ),
+                                      password: passwordController.text.trim(),),
                                   );
                                 }
                               },

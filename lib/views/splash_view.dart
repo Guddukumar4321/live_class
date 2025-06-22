@@ -4,6 +4,7 @@ import 'dart:async';
 
 import '../core/images/image_path.dart';
 import '../core/route/app_routes.dart';
+import '../core/value/String_value.dart';
 import '../utils/text_style.dart';
 import '../widgets/bg_widget.dart';
 import '../widgets/custom_images.dart';
@@ -21,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Timer(const Duration(seconds: 3), () {
-      checkLoginStatus();
+       checkLoginStatus();
     });
   }
 
@@ -46,14 +47,9 @@ class _SplashScreenState extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomImage(
-                path:Images.logo,
+                path:Images.infyApp,
                 width: 140,
                 height: 140,
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'LiveClassroom',
-                style: AppTextStyles.heading2,
               ),
 
             ],
